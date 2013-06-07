@@ -38,7 +38,6 @@ function loadSpecies(species,DoneLoading,DoneLoading2) {
 	rvDataSets[0].Name=species;
 	$.each(rvDataSets[0].Layers, function (i, item){
 		item.clearAll();
-		item.clearCanvas();
 	});
 	$(".dataBubble").remove();
 	if (species != "None") {

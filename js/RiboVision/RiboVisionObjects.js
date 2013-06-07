@@ -158,7 +158,7 @@ function RvLayer(LayerName, CanvasName, Data, Filled, ScaleFactor, Type, Color) 
 				$("[name=" + this.LayerName + "]").find(".layerContent").find("span[name=DataLabel]").text(this.DataLabel);
 				this.clearData();
 				drawNavLine();
-				this.clearCanvas();
+				rvDataSets[0].clearCanvas(this.LayerName);
 				update3Dcolors();
 				break;
 			case "residues":
@@ -651,7 +651,8 @@ function rvDataSet(DataSetName) {
 						if (ColorArray[dataIndices[i]]) {
 							rvDataSets[0].Residues[i].color = ColorArray[dataIndices[i]];
 							targetLayer.dataLayerColors[i] = ColorArray[dataIndices[i]];
-						} else if (dataIndices[i]!=undefined && isNaN(dataIndices[i])){
+						//} else if (dataIndices[i]!=undefined && isNaN(dataIndices[i])){ Do not remember why this was here. Try without.
+						} else if (i in dataIndices){
 							rvDataSets[0].Residues[i].color = "#000000";
 							targetLayer.dataLayerColors[i] = "#000000";
 						}
@@ -691,7 +692,7 @@ function rvDataSet(DataSetName) {
 				targetLayer.dataLayerColors[i] = "#858585";
 			}
 			for (var k = SelectionList.length - 1 ; k >= 0 ; k--){
-				targetSelection = rvDataSets[0].getSelection(SelectionList[k]);
+				var targetSelection = rvDataSets[0].getSelection(SelectionList[k]);
 				for (var j = targetSelection.Residues.length - 1; j >= 0; j--) {
 					targetLayer.CanvasContext.beginPath();
 					targetLayer.CanvasContext.arc(targetSelection.Residues[j].X, targetSelection.Residues[j].Y, (targetLayer.ScaleFactor * 1.7), 0, 2 * Math.PI, false);
@@ -755,7 +756,9 @@ function rvDataSet(DataSetName) {
 		} else {
 			targetLayer.ColorLayer = colorLayer;
 		}
-		if (rvDataSets[0].BasePairs != undefined || rvDataSets[0].BasePairs == []) {
+		targetLayer.Data=rvDataSets[0].BasePairs;
+		
+		if (targetLayer.Data != undefined || targetLayer.Data == []) {
 			if (targetLayer.ColorGradientMode == "Matched") {
 				var grd_order = [0, 1];
 			} else if (targetLayer.ColorGradientMode == "Opposite") {
@@ -763,26 +766,26 @@ function rvDataSet(DataSetName) {
 			} else {
 				alert("how did we get here?");
 			}
-			for (var i = 0; i < rvDataSets[0].BasePairs.length; i++) {
-				var j = rvDataSets[0].BasePairs[i].resIndex1;
-				var k = rvDataSets[0].BasePairs[i].resIndex2;
+			for (var i = 0; i < targetLayer.Data.length; i++) {
+				var j = targetLayer.Data[i].resIndex1;
+				var k = targetLayer.Data[i].resIndex2;
 				if (zoomEnabled) {
 					var jkdist = Math.sqrt(((rvDataSets[0].Residues[j].X - rvDataSets[0].Residues[k].X) * (rvDataSets[0].Residues[j].X - rvDataSets[0].Residues[k].X) + (rvDataSets[0].Residues[j].Y - rvDataSets[0].Residues[k].Y) * (rvDataSets[0].Residues[j].Y - rvDataSets[0].Residues[k].Y)));
 					
 					if ((150 - rvViews[0].scale * 23) > jkdist) {
-						rvDataSets[0].BasePairs[i]["color"] = "rgba(35,31,32,0)";
+						targetLayer.Data[i]["color"] = "rgba(35,31,32,0)";
 						continue;
 					}
 					if (((rvDataSets[0].Residues[j].X * rvViews[0].scale + rvViews[0].x < 0) || (rvDataSets[0].Residues[j].X * rvViews[0].scale + rvViews[0].x > rvViews[0].clientWidth) || (rvDataSets[0].Residues[j].Y * rvViews[0].scale + rvViews[0].y < 0) || (rvDataSets[0].Residues[j].Y * rvViews[0].scale + rvViews[0].y > rvViews[0].clientHeight))
 						 && ((rvDataSets[0].Residues[k].X * rvViews[0].scale + rvViews[0].x < 0) || (rvDataSets[0].Residues[k].X * rvViews[0].scale + rvViews[0].x > rvViews[0].clientWidth) || (rvDataSets[0].Residues[k].Y * rvViews[0].scale + rvViews[0].y < 0) || (rvDataSets[0].Residues[k].Y * rvViews[0].scale + rvViews[0].y > rvViews[0].clientHeight))) {
-						rvDataSets[0].BasePairs[i]["color"] = "rgba(35,31,32,0)";
+						targetLayer.Data[i]["color"] = "rgba(35,31,32,0)";
 						continue;
 					}
 				}
 				if (j >= 0 && k >= 0) {
 					switch (colorLayer.Type) {
 					case undefined:
-						rvDataSets[0].BasePairs[i]["color"] = "rgba(35,31,32,.5)";
+						targetLayer.Data[i]["color"] = "rgba(35,31,32,.5)";
 						break;
 					case "residues":
 						var grd = colorLayer.CanvasContext.createLinearGradient(rvDataSets[0].Residues[j].X, rvDataSets[0].Residues[j].Y, rvDataSets[0].Residues[k].X, rvDataSets[0].Residues[k].Y);
@@ -794,7 +797,7 @@ function rvDataSet(DataSetName) {
 							grd.addColorStop(grd_order[1], "rgba(" + h2d(color2.slice(1, 3)) + "," + h2d(color2.slice(3, 5)) + "," + h2d(color2.slice(5)) + ",.5)");
 						}
 						//colorLayer.addLinearGradient(grd);
-						rvDataSets[0].BasePairs[i]["color"] = grd;
+						targetLayer.Data[i]["color"] = grd;
 						break;
 					case "circles":
 						var grd = colorLayer.CanvasContext.createLinearGradient(rvDataSets[0].Residues[j].X, rvDataSets[0].Residues[j].Y, rvDataSets[0].Residues[k].X, rvDataSets[0].Residues[k].Y);
@@ -806,7 +809,7 @@ function rvDataSet(DataSetName) {
 							grd.addColorStop(grd_order[1], "rgba(" + h2d(color2.slice(1, 3)) + "," + h2d(color2.slice(3, 5)) + "," + h2d(color2.slice(5)) + ",.5)");
 						}
 						//colorLayer.addLinearGradient(grd);
-						rvDataSets[0].BasePairs[i]["color"] = grd;
+						targetLayer.Data[i]["color"] = grd;
 						break;
 					case "selected":
 						var grd = colorLayer.CanvasContext.createLinearGradient(rvDataSets[0].Residues[j].X, rvDataSets[0].Residues[j].Y, rvDataSets[0].Residues[k].X, rvDataSets[0].Residues[k].Y);
@@ -819,7 +822,7 @@ function rvDataSet(DataSetName) {
 							grd.addColorStop(grd_order[1], "rgba(" + h2d(color2.slice(1, 3)) + "," + h2d(color2.slice(3, 5)) + "," + h2d(color2.slice(5)) + ",.5)");
 						}
 						//colorLayer.addLinearGradient(grd);
-						rvDataSets[0].BasePairs[i]["color"] = grd;
+						targetLayer.Data[i]["color"] = grd;
 						break;
 					default:
 						alert("this shouldn't be happening right now.");
@@ -829,7 +832,7 @@ function rvDataSet(DataSetName) {
 					targetLayer.CanvasContext.beginPath();
 					targetLayer.CanvasContext.moveTo(rvDataSets[0].Residues[j].X, rvDataSets[0].Residues[j].Y);
 					targetLayer.CanvasContext.lineTo(rvDataSets[0].Residues[k].X, rvDataSets[0].Residues[k].Y);
-					targetLayer.CanvasContext.strokeStyle = rvDataSets[0].BasePairs[i]["color"];			
+					targetLayer.CanvasContext.strokeStyle = targetLayer.Data[i]["color"];			
 					targetLayer.CanvasContext.stroke();
 					targetLayer.CanvasContext.closePath();
 					if (zoomEnabled && (rvViews[0].scale > 10)) {
@@ -847,7 +850,7 @@ function rvDataSet(DataSetName) {
 						targetLayer.CanvasContext.restore();
 						targetLayer.CanvasContext.save();
 						targetLayer.CanvasContext.font = ".5px Arial";
-						targetLayer.CanvasContext.fillText(rvDataSets[0].BasePairs[i].bp_type, xmid - 2, ymid + .5);
+						targetLayer.CanvasContext.fillText(targetLayer.Data[i].bp_type, xmid - 2, ymid + .5);
 						targetLayer.CanvasContext.restore();
 						
 					}

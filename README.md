@@ -3,7 +3,7 @@ RiboVision
 
 RiboVision webapp, a RiboZones Project. Sponsered by RiboEvo.
 
-First commit of Public Version 1.02
+Updated to version 1.06.
 
 This isn't totally ready yet. The documentation isn't in here, yet. The code isn't organized and commented enough. 
 I don't have all the licenses in here correct. I still need to describe the backend archetecture. 

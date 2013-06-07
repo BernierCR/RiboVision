@@ -28,7 +28,7 @@
 </script>
     <script type="text/javascript" src="js/jquery.mousewheel.min.js">
 </script>
-    <script type="text/javascript" src="js/jquery.csv-0.65pre.js">
+    <script type="text/javascript" src="js/jquery.csv-0.71.min.js">
 </script>
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8">
 </script>
@@ -66,7 +66,7 @@
 <body>
     <div id="menu" class="ui-widget-content">
         <div id="SiteInfo" class="ui-widget-content">
-            <h3 class="ui-widget-header2"><a href="./ChangeLog.txt" target="_blank" style="color:#FFF">RiboVision: Version 1.02</a></h3>
+            <h3 class="ui-widget-header2"><a href="./ChangeLog.txt" target="_blank" style="color:#FFF">RiboVision: Version 1.06</a></h3>
             <div id="MainLogoDiv"><a href="/Documentation/index.html" target="_blank"><img src="images/RiboVisionLogo.png" id="MainLogo" title="RiboVision Manual" alt="Ribovision Logo" /></a></div>
         </div>
 
@@ -75,6 +75,7 @@
 
             <div id="SideBarAccordian">
                 <h3><a href="#">Species/Subunit</a></h3>
+					<!--<div><span class="dataBubble ui-helper-reset ui-corner-all ui-state-default ui-corner-bottom">Test</span></div>//-->
                 <div id="SpeciesDiv" style="padding:0.1em">
 					<ul id="speciesList" style="font-size:0.9em">
                         <li class="ui-menu-item ios-menu-back-link" role="menu">
@@ -177,8 +178,8 @@
 			</span>
 		</div>
         <div id="ExportData" class="ui-widget-content">
-            <h3 class="ui-widget-header2">Save</h3><input id="SaveFigureBtn" type="button" value="Save Figures" /> <input id="SaveSessionBtn" type="button"
-            value="Save Session" />
+            <h3 class="ui-widget-header2">Save</h3><input id="SaveFigureBtn" type="button" value="Figures/Sequence" /> <input id="SaveSessionBtn" type="button"
+            value="Session" />
         </div>
     </div>
 
@@ -225,7 +226,8 @@
         <button id="openColorBtn" class="toolBarBtn" title="Open Color Picker"></button><br />
         <button id="RiboVisionSettings" class="toolBarBtn" title="RiboVision Settings"></button><br />
         <button id="RiboVisionSaveManager" class="toolBarBtn" title="RiboVision Save/Restore Manager"></button><br />
-        <button id="openManualBtn" class="toolBarBtn" title="Ribovision Manual" onclick="window.open(&#39;/Documentation/index.html&#39;)"></button>
+        <button id="openManualBtn" class="toolBarBtn" title="Ribovision Manual" onclick="window.open(&#39;/Documentation/index.html&#39;)">Ribovision
+        Manual</button>
     </div><!--Layer Control Dialog Box-->
 
     <div id="LayerDialog" title="Layer / Selection Manager">
@@ -359,7 +361,8 @@
 
     <div id="RiboVisionSaveManagerPanel" title="Save/Restore Manager">
         <div id="FreshDiv" class="ui-widget-content">
-            Default RiboVision Settings <input id="freshenRvState" name="savebuttonT" type="button" value="Restore Default State" />
+           <h3 class="ui-widget-header3">Restore Default State</h3>
+		   <input id="freshenRvState" name="savebuttonT" type="button" value="Restore" />
         </div>
 
         <div id="SaveOptionsDiv" class="ui-widget-content">
@@ -379,25 +382,57 @@
             <input id="JmolOrientationCheck" name="JmolOrientationCheck" value="JmolOrientationCheck" type="checkbox" checked="checked" /><label for=
             "JmolOrientationCheck">3D Settings</label><br />
             <br />
-            File only:<br />
+            File / Server only:<br />
             <input id="WholeDataSetCheck" name="WholeDataSetCheck" value="WholeDataSetCheck" type="checkbox" checked="checked" /><label for=
             "WholeDataSetCheck">Entire DataSet</label><br />
             <br />
         </div>
 
-        <div id="SaveControlDiv" class="ui-widget-content">
-            <div id="SaveControl">
-                Save To / Restore From:<br />
+        <div id="SaveControlDivB" class="ui-widget-content">
+            <h3 class="ui-widget-header3">Save in Browser</h3>
+			<div id="SaveControlB">
+                <!--
+				Save To / Restore From:<br />
                 <br />
                 <input id="sscB" type="radio" name="ssc" value="LocalStorage" /><label for="sscB">Browser</label> <input id="sscF" type="radio" name="ssc"
-                value="File" /><label for="sscF">File</label><br />
-                <br />
+                value="File" /><label for="sscF">File</label> <input id="sscS" type="radio" name="ssc" value="Server" /><label for="sscS">Server</label><br />
+                <br />//-->
                 Session Name:<br />
-                <input id="SaveStateFileName" name="SaveStateFileName" type="text" value="RV_DataSet1" />
-
-               <input id="ssSave" type="button" value="Save" /> <input id="ssRestore" type="button" value="Restore" />
+                <input id="SaveStateFileName" name="SaveStateFileName" type="text" value="RV_DataSet1" /><br /><br />
+				<!--
+                <p>Warning! Save to &quot;Server&quot; is currently being provided for testing purposes only. Data can be overwritten and/or deleted at any
+                time. Additionally, other people may be able to see your work. Don&#39;t rely on this feature right now, keep backups in files.</p>//-->
+				<input id="ssSaveB" type="button" value="Save" /> 
+				<input id="ssRestoreB" type="button" value="Restore" /><br /><br />
+				<input id="clearLS" type="button" value="Delete all Sessions" /> <br /><br />
+				<b>Saved Sessions:</b><br />
+				<div id="SessionListDiv">
+					<p id="SessionList"></p><br /><br />
+				</div>
+				
+				
             </div>
         </div>
+		<div id="SaveControlDivF" class="ui-widget-content">
+            <h3 class="ui-widget-header3">Save to File</h3>
+			<div id="SaveControlF">
+                <!--
+				Save To / Restore From:<br />
+                <br />
+                <input id="sscB" type="radio" name="ssc" value="LocalStorage" /><label for="sscB">Browser</label> <input id="sscF" type="radio" name="ssc"
+                value="File" /><label for="sscF">File</label> <input id="sscS" type="radio" name="ssc" value="Server" /><label for="sscS">Server</label><br />
+                <br />//-->
+                Session Name:<br />
+                <input id="SaveStateFileName" name="SaveStateFileName" type="text" value="RV_DataSet1" /><br /><br />
+				<!--
+                <p>Warning! Save to &quot;Server&quot; is currently being provided for testing purposes only. Data can be overwritten and/or deleted at any
+                time. Additionally, other people may be able to see your work. Don&#39;t rely on this feature right now, keep backups in files.</p>//-->
+				<input id="ssSaveF" type="button" value="Save" /> 
+				<input id="ssRestoreF" type="button" value="Restore" />
+				<p>We do not support loading zip files. Please make sure to unzip your RiboVision Session before restoring.</p>
+            </div>
+        </div>
+		
     </div>
 
     <div id="dialog-confirm-delete" title="Delete the currently selected layer?">
@@ -487,8 +522,7 @@
         <div id="NavLineExport" class="ui-widget-content ExportDiv">
             <h3 class="ui-widget-header3">1D Panel</h3>
 
-            <p>RiboVision supports saving of the 1D Panel in SVG only.</p><input name="saveas" type="button" onclick="JavaScript:saveNavLine();" value=
-            "Save NavLine" /><br />
+            <p>RiboVision supports saving of the 1D Panel in SVG only.</p><input type="button" onclick="JavaScript:saveNavLine();" value="Save 1D Figure" /><br />
         </div>
 
         <div id="CanvasExport" class="ui-widget-content ExportDiv">
@@ -498,21 +532,25 @@
             checked="checked" /><label for="visibleLayers">Visible Layers</label> <input id="allLayers" type="radio" name="savelayers" value=
             "all" /><label for="allLayers">All Layers</label>
 
-            <p>SVG files are best for further editing.</p><input name="saveas" type="button" onclick="JavaScript:saveSVG();" value="Save as SVG" /><br />
+            <p>SVG files are best for further editing.</p><input type="button" onclick="JavaScript:saveSVG();" value="Save as SVG" /><br />
 
-            <p>PDF files are best for printing and sharing.</p><input name="saveas" type="button" onclick="JavaScript:savePDF();" value="Save as PDF" /> <br>
+            <p>PDF files are best for printing and sharing.</p><input type="button" onclick="JavaScript:savePDF();" value="Save as PDF" /> <br>
 			
 			<p>PNG and JPG files are good for presentations. PNG has the advantage of a transparent background.</p>
-			<input name="saveas" type="button" onclick="JavaScript:savePNG();" value="Save as PNG" />
-			<input name="saveas" type="button" onclick="JavaScript:saveJPG();" value="Save as JPG" />
+			<input type="button" onclick="JavaScript:savePNG();" value="Save as PNG" />
+			<input type="button" onclick="JavaScript:saveJPG();" value="Save as JPG" />
         </div>
 
         <div id="JmolExport" class="ui-widget-content ExportDiv">
             <h3 class="ui-widget-header3">3D Panel</h3>
             <p>Jmol has built-in image saving capabilities.</p>
-			<p>RiboVision supports quick-saving the 3D Panel to JPG.</p><input name="saveas" type="button" onclick="JavaScript:saveJmolImg();" value="JPG: 3D side" /><br />
-            <p>Additionally, you may export a PyMOL Script for further processing in PyMOL.</p><input name="saveas" type="button" onclick="JavaScript:savePML();" value="PyMOL Script" />
+			<p>RiboVision supports quick-saving the 3D Panel to JPG.</p><input type="button" onclick="JavaScript:saveJmolImg();" value="JPG: 3D side" /><br />
+            <p>Additionally, you may export a PyMOL Script for further processing in PyMOL.</p><input type="button" onclick="JavaScript:savePML();" value="PyMOL Script" />
         </div>
+		<div id="SequenceExport" class="ui-widget-content ExportDiv2">
+			<input type="button" onclick="JavaScript:saveSeqTable();" value="Save Sequence as Table (.csv)" />
+			<input type="button" onclick="JavaScript:saveFasta();" value="Save Sequence as Text (.fasta)" />
+		</div>
     </div>
 
     <div id="dialog-addLayer" title="Create a New Layer">
