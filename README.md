@@ -3,10 +3,10 @@ RiboVision
 
 RiboVision webapp, a RiboZones Project. Sponsered by RiboEvo.
 
-Updated to version 1.06.
+Updated to version 1.10.
 
-This isn't totally ready yet. The documentation isn't in here, yet. The code isn't organized and commented enough. 
-I don't have all the licenses in here correct. I still need to describe the backend archetecture. 
+This isn't totally ready yet. The documentation is in the repo now, but not fully updated for version 1.10. The code isn't organized and commented enough. 
+I don't have all the licenses in here correct. I still need to describe the back-end architecture. 
 
 This is the first time I ever actually released any of my source code. 
 
