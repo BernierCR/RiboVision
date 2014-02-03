@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.render");
-Clazz.load (["J.render.FontLineShapeRenderer", "J.util.P3"], "J.render.AxesRenderer", ["J.constant.EnumAxesMode", "J.util.Point3fi"], function () {
+Clazz.load (["J.render.FontLineShapeRenderer", "JU.P3"], "J.render.AxesRenderer", ["J.constant.EnumAxesMode", "J.util.Point3fi"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.screens = null;
 this.originScreen = null;
@@ -9,23 +9,23 @@ Clazz.instantialize (this, arguments);
 Clazz.prepareFields (c$, function () {
 this.screens =  new Array (6);
 {
-for (var i = 6; --i >= 0; ) this.screens[i] =  new J.util.P3 ();
+for (var i = 6; --i >= 0; ) this.screens[i] =  new JU.P3 ();
 
-}this.originScreen =  new J.util.P3 ();
+}this.originScreen =  new JU.P3 ();
 this.colixes =  Clazz.newShortArray (3, 0);
 });
-Clazz.overrideMethod (c$, "initRenderer", 
+$_V(c$, "initRenderer", 
 function () {
 this.endcap = 2;
 this.draw000 = false;
 });
-Clazz.overrideMethod (c$, "render", 
+$_V(c$, "render", 
 function () {
 var axes = this.shape;
 var mad = this.viewer.getObjectMad (1);
 if (mad == 0 || !this.g3d.checkTranslucent (false)) return false;
 var isXY = (axes.axisXY.z != 0);
-if (!isXY && this.viewer.isNavigating () && this.viewer.getBoolean (603979887)) return false;
+if (!isXY && this.viewer.isNavigating () && this.viewer.getBoolean (603979888)) return false;
 var axesMode = this.viewer.getAxesMode ();
 this.imageFontScaling = this.viewer.getImageFontScaling ();
 if (this.viewer.areAxesTainted ()) {
@@ -33,13 +33,14 @@ var f = axes.font3d;
 axes.initShape ();
 if (f != null) axes.font3d = f;
 }this.font3d = this.g3d.getFont3DScaled (axes.font3d, this.imageFontScaling);
-var cellInfos = this.modelSet.unitCells;
 var modelIndex = this.viewer.getCurrentModelIndex ();
 var isUnitCell = (axesMode === J.constant.EnumAxesMode.UNITCELL);
-if (this.viewer.isJmolDataFrameForModel (modelIndex) && !this.viewer.getModelSet ().getJmolFrameType (modelIndex).equals ("plot data") || isUnitCell && modelIndex < 0) return false;
-var nPoints = 6;
+if (this.viewer.isJmolDataFrameForModel (modelIndex) && !this.viewer.getModelSet ().getJmolFrameType (modelIndex).equals ("plot data")) return false;
+if (isUnitCell && modelIndex < 0) {
+if (this.viewer.getCurrentUnitCell () == null) return false;
+}var nPoints = 6;
 var labelPtr = 0;
-if (isUnitCell && cellInfos != null) {
+if (isUnitCell && this.modelSet.unitCells != null) {
 nPoints = 3;
 labelPtr = 6;
 } else if (isXY) {
@@ -63,8 +64,8 @@ if (diameter == 0) diameter = 2;
 } else {
 if (this.g3d.isAntialiased ()) diameter += diameter;
 }this.g3d.setSlab (0);
-this.pt0.setT (this.viewer.transformPt (axes.axisXY));
-this.originScreen.set (this.pt0.x, this.pt0.y, this.pt0.z);
+this.pt0i.setT (this.viewer.transformPt (axes.axisXY));
+this.originScreen.set (this.pt0i.x, this.pt0i.y, this.pt0i.z);
 var zoomDimension = this.viewer.getScreenDim ();
 var scaleFactor = zoomDimension / 10 * axes.scale;
 if (this.g3d.isAntialiased ()) scaleFactor *= 2;
@@ -101,7 +102,7 @@ this.atomB.setT (axes.getAxisPoint (i, isDataFrame));
 if (this.tickInfo != null) {
 this.tickInfo.first = 0;
 this.tickInfo.signFactor = (i % 6 >= 3 ? -1 : 1);
-}}this.renderLine (this.originScreen, this.screens[i], diameter, this.pt0, this.pt1, drawTicks && this.tickInfo != null);
+}}this.renderLine (this.originScreen, this.screens[i], diameter, this.pt0i, this.pt1i, drawTicks && this.tickInfo != null);
 }
 if (nPoints == 3 && !isXY) {
 var label0 = (axes.labels == null || axes.labels.length == 3 || axes.labels[3] == null ? "0" : axes.labels[3]);

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.PolygonFileReader"], "J.jvxl.readers.PmeshReader", ["J.jvxl.data.JvxlCoder", "J.util.Logger", "$.P3"], function () {
+Clazz.load (["J.jvxl.readers.PolygonFileReader"], "J.jvxl.readers.PmeshReader", ["JU.P3", "J.jvxl.data.JvxlCoder", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.isBinary = false;
 this.nPolygons = 0;
@@ -21,19 +21,19 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.PmeshReader, []);
 });
-$_M(c$, "init2", 
+$_V(c$, "init2", 
 function (sg, br) {
-Clazz.superCall (this, J.jvxl.readers.PmeshReader, "init2", [sg, br]);
+this.init2PR (sg, br);
+}, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
+$_M(c$, "init2PR", 
+function (sg, br) {
+this.init2PFR (sg, br);
 var fileName = (sg.getReaderData ())[0];
 if (fileName == null) return;
 this.type = "pmesh";
 this.setHeader ();
 this.isBinary = this.checkBinary (fileName);
 this.isClosedFace = !this.isBinary;
-}, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
-$_M(c$, "superInit2", 
-function (sg, br) {
-Clazz.superCall (this, J.jvxl.readers.PmeshReader, "init2", [sg, br]);
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
 $_M(c$, "setHeader", 
 function () {
@@ -60,7 +60,7 @@ throw e;
 }
 return false;
 }, "~S");
-Clazz.overrideMethod (c$, "getSurfaceData", 
+$_V(c$, "getSurfaceData", 
 function () {
 if (this.readVerticesAndPolygons ()) J.util.Logger.info ((this.isBinary ? "binary " : "") + this.type + " file contains " + this.nVertices + " vertices and " + this.nPolygons + " polygons for " + this.nTriangles + " triangles");
  else J.util.Logger.error (this.params.fileName + ": " + (this.pmeshError == null ? "Error reading pmesh data " : this.pmeshError));
@@ -102,6 +102,10 @@ return true;
 });
 $_M(c$, "readVertices", 
 function () {
+return this.readVerticesPM ();
+});
+$_M(c$, "readVerticesPM", 
+function () {
 this.pmeshError = this.type + " ERROR: vertex count must be positive";
 if (!this.isBinary) this.nVertices = this.getInt ();
 if (this.onePerLine) this.iToken = 2147483647;
@@ -109,7 +113,7 @@ if (this.nVertices <= 0) {
 this.pmeshError += " (" + this.nVertices + ")";
 return false;
 }this.pmeshError = this.type + " ERROR: invalid vertex list";
-var pt =  new J.util.P3 ();
+var pt =  new JU.P3 ();
 this.vertexMap =  Clazz.newIntArray (this.nVertices, 0);
 for (var i = 0; i < this.nVertices; i++) {
 pt.set (this.getFloat (), this.getFloat (), this.getFloat ());
@@ -122,6 +126,10 @@ this.pmeshError = null;
 return true;
 });
 $_M(c$, "readPolygons", 
+function () {
+return this.readPolygonsPM ();
+});
+$_M(c$, "readPolygonsPM", 
 function () {
 this.pmeshError = this.type + " ERROR: polygon count must be zero or positive";
 if (!this.isBinary) this.nPolygons = this.getInt ();

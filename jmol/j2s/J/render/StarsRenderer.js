@@ -5,7 +5,7 @@ this.mar = 0;
 this.width = 0;
 Clazz.instantialize (this, arguments);
 }, J.render, "StarsRenderer", J.render.ShapeRenderer);
-Clazz.overrideMethod (c$, "render", 
+$_V(c$, "render", 
 function () {
 var stars = this.shape;
 if (stars.mads == null) return false;
@@ -24,15 +24,17 @@ return needTranslucent;
 });
 $_M(c$, "render1", 
 ($fz = function (atom, mad) {
-var x = atom.screenX;
-var y = atom.screenY;
-var z = atom.screenZ;
+var x = atom.sX;
+var y = atom.sY;
+var z = atom.sZ;
 var d = Clazz.floatToInt (this.viewer.scaleToScreen (z, mad));
 d -= (d & 1) ^ 1;
 var r = Clazz.doubleToInt (d / 2);
-if (r < 3) return;
+if (r < 1) r = 1;
 if (this.mar > 0) {
 this.width = Clazz.floatToInt (this.viewer.scaleToScreen (z, this.mar));
+if (this.width == 0) this.width = 1;
+if (this.width == 1 && this.g3d.isAntialiased ()) this.width = 2;
 } else {
 this.drawLine (x - r - 1, y + 1, z, x - r - 1 + d, y + 1, z);
 this.drawLine (x + 1, y + 1 - r, z, x + 1, y + 1 - r + d, z);

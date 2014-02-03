@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.readers");
-Clazz.load (["J.jvxl.readers.PmeshReader"], "J.jvxl.readers.MsmsReader", ["J.io.JmolBinary", "J.util.Logger", "$.TextFormat"], function () {
+Clazz.load (["J.jvxl.readers.PmeshReader"], "J.jvxl.readers.MsmsReader", ["JU.PT", "J.io.JmolBinary", "J.util.Logger"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.fileName = null;
 Clazz.instantialize (this, arguments);
@@ -8,9 +8,9 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.MsmsReader, []);
 });
-Clazz.overrideMethod (c$, "init2", 
+$_V(c$, "init2", 
 function (sg, br) {
-this.superInit2 (sg, br);
+this.init2PFR (sg, br);
 this.fileName = (sg.getReaderData ())[0];
 if (this.fileName == null) return;
 this.type = "msms";
@@ -19,15 +19,15 @@ this.fixedCount = 3;
 this.vertexBase = 1;
 this.setHeader ();
 }, "J.jvxl.readers.SurfaceGenerator,java.io.BufferedReader");
-$_M(c$, "readVertices", 
+$_V(c$, "readVertices", 
 function () {
 this.skipHeader ();
-return Clazz.superCall (this, J.jvxl.readers.MsmsReader, "readVertices", []);
+return this.readVerticesPM ();
 });
-$_M(c$, "readPolygons", 
+$_V(c$, "readPolygons", 
 function () {
 this.br.close ();
-this.fileName = J.util.TextFormat.simpleReplace (this.fileName, ".vert", ".face");
+this.fileName = JU.PT.simpleReplace (this.fileName, ".vert", ".face");
 J.util.Logger.info ("reading from file " + this.fileName);
 try {
 this.br = J.io.JmolBinary.getBufferedReader (this.sg.getAtomDataServer ().getBufferedInputStream (this.fileName), null);
@@ -42,7 +42,7 @@ throw e;
 }
 this.sg.addRequiredFile (this.fileName);
 this.skipHeader ();
-return Clazz.superCall (this, J.jvxl.readers.MsmsReader, "readPolygons", []);
+return this.readPolygonsPM ();
 });
 $_M(c$, "skipHeader", 
 ($fz = function () {

@@ -1,11 +1,11 @@
 Clazz.declarePackage ("J.shape");
 Clazz.load (["J.shape.Shape"], "J.shape.FontShape", null, function () {
 c$ = Clazz.decorateAsClass (function () {
-this.font3d = null;
 this.myType = null;
+this.font3d = null;
 Clazz.instantialize (this, arguments);
 }, J.shape, "FontShape", J.shape.Shape);
-Clazz.overrideMethod (c$, "initShape", 
+$_V(c$, "initShape", 
 function () {
 this.translucentAllowed = false;
 });

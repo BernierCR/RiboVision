@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.constant");
-Clazz.load (["java.lang.Enum"], "J.constant.EnumQuantumShell", ["J.util.SB"], function () {
+Clazz.load (["java.lang.Enum"], "J.constant.EnumQuantumShell", ["JU.SB"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.tag = null;
 this.tag2 = null;
@@ -16,7 +16,7 @@ this.idSpherical = idSpherical;
 }, $fz.isPrivate = true, $fz), "~S,~S,~N,~N");
 c$.getNewDfCoefMap = $_M(c$, "getNewDfCoefMap", 
 function () {
-return [ Clazz.newIntArray (1, 0),  Clazz.newIntArray (3, 0),  Clazz.newIntArray (4, 0),  Clazz.newIntArray (5, 0),  Clazz.newIntArray (6, 0),  Clazz.newIntArray (7, 0),  Clazz.newIntArray (10, 0)];
+return [ Clazz.newIntArray (1, 0),  Clazz.newIntArray (3, 0),  Clazz.newIntArray (4, 0),  Clazz.newIntArray (5, 0),  Clazz.newIntArray (6, 0),  Clazz.newIntArray (7, 0),  Clazz.newIntArray (10, 0),  Clazz.newIntArray (9, 0),  Clazz.newIntArray (15, 0),  Clazz.newIntArray (11, 0),  Clazz.newIntArray (21, 0),  Clazz.newIntArray (13, 0),  Clazz.newIntArray (28, 0)];
 });
 c$.getQuantumShellTagID = $_M(c$, "getQuantumShellTagID", 
 function (tag) {
@@ -61,6 +61,10 @@ case 9:
 return J.constant.EnumQuantumShell.H_SPHERICAL;
 case 10:
 return J.constant.EnumQuantumShell.H_CARTESIAN;
+case 11:
+return J.constant.EnumQuantumShell.I_SPHERICAL;
+case 12:
+return J.constant.EnumQuantumShell.I_CARTESIAN;
 }
 return null;
 }, "~N");
@@ -72,7 +76,7 @@ return "" + id;
 }, "~N");
 c$.getMOString = $_M(c$, "getMOString", 
 function (lc) {
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 if (lc.length == 2) return "" + Clazz.floatToInt (lc[0] < 0 ? -lc[1] : lc[1]);
 sb.appendC ('[');
 for (var i = 0; i < lc.length; i += 2) {
@@ -92,6 +96,8 @@ Clazz.defineEnumConstant (c$, "F_SPHERICAL", 5, ["7F", "7F", 5, 5]);
 Clazz.defineEnumConstant (c$, "F_CARTESIAN", 6, ["F", "XXX", 6, 5]);
 Clazz.defineEnumConstant (c$, "G_SPHERICAL", 7, ["9G", "9G", 7, 7]);
 Clazz.defineEnumConstant (c$, "G_CARTESIAN", 8, ["G", "XXXX", 8, 7]);
-Clazz.defineEnumConstant (c$, "H_SPHERICAL", 9, ["10H", "10H", 9, 9]);
+Clazz.defineEnumConstant (c$, "H_SPHERICAL", 9, ["11H", "11H", 9, 9]);
 Clazz.defineEnumConstant (c$, "H_CARTESIAN", 10, ["H", "XXXXX", 10, 9]);
+Clazz.defineEnumConstant (c$, "I_SPHERICAL", 11, ["13I", "13I", 11, 11]);
+Clazz.defineEnumConstant (c$, "I_CARTESIAN", 12, ["I", "XXXXXX", 12, 11]);
 });

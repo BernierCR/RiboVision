@@ -8,12 +8,16 @@ Clazz.makeConstructor (c$,
 function () {
 Clazz.superConstructor (this, J.jvxl.readers.IsoMepReader, []);
 });
-$_M(c$, "init", 
+$_V(c$, "init", 
 function (sg) {
-Clazz.superCall (this, J.jvxl.readers.IsoMepReader, "init", [sg]);
+this.initIMR (sg);
+}, "J.jvxl.readers.SurfaceGenerator");
+$_M(c$, "initIMR", 
+function (sg) {
+this.initADR (sg);
 this.type = "Mep";
 }, "J.jvxl.readers.SurfaceGenerator");
-Clazz.overrideMethod (c$, "setup", 
+$_V(c$, "setup", 
 function (isMapData) {
 this.setup2 ();
 this.doAddHydrogens = false;
@@ -21,7 +25,7 @@ this.getAtoms (this.params.bsSelected, this.doAddHydrogens, true, false, false, 
 this.setHeader ("MEP", "");
 this.setRanges (this.params.mep_ptsPerAngstrom, this.params.mep_gridMax, 0);
 }, "~B");
-Clazz.overrideMethod (c$, "generateCube", 
+$_V(c$, "generateCube", 
 function () {
 this.newVoxelDataCube ();
 var m = J.api.Interface.getOptionInterface ("quantum." + this.type + "Calculation");

@@ -33,8 +33,8 @@ $_M(c$, "setLineBits",
 function (dx, dy) {
 this.slope = (dx != 0 ? dy / dx : dy >= 0 ? 3.4028235E38 : -3.4028235E38);
 this.lineTypeX = (this.slope <= 1 && this.slope >= -1);
-if (this.getCachedLine ()) return;
 this.nBits = (this.lineTypeX ? this.g3d.getRenderWidth () : this.g3d.getRenderHeight ());
+if (this.getCachedLine ()) return;
 this.lineBits = J.util.BSUtil.newBitSet (this.nBits);
 dy = Math.abs (dy);
 dx = Math.abs (dx);
@@ -54,6 +54,11 @@ twoDError -= twoDx;
 this.lineCache.put (this.slopeKey, this.lineBits);
 this.nCached++;
 }, "~N,~N");
+$_M(c$, "clearLineCache", 
+function () {
+this.lineCache.clear ();
+this.nCached = 0;
+});
 $_M(c$, "plotLine", 
 function (argbA, tScreenedA, argbB, tScreenedB, xA, yA, zA, xB, yB, zB, clipped) {
 this.x1t = xA;
@@ -137,9 +142,9 @@ $_M(c$, "getCachedLine",
 this.slopeKey = Float.$valueOf (this.slope);
 if (!this.lineCache.containsKey (this.slopeKey)) return false;
 this.lineBits = this.lineCache.get (this.slopeKey);
+if (J.util.Logger.debugging) {
 this.nFound++;
-if (this.nFound == 1000000) if (J.util.Logger.debugging) {
-J.util.Logger.debug ("nCached/nFound lines: " + this.nCached + " " + this.nFound);
+if (this.nFound == 1000000) J.util.Logger.debug ("nCached/nFound lines: " + this.nCached + " " + this.nFound);
 }return true;
 }, $fz.isPrivate = true, $fz));
 $_M(c$, "getTrimmedLine", 
@@ -158,54 +163,54 @@ var dy = this.y2t - this.y1t;
 var dz = this.z2t - this.z1t;
 if (this.cc1 != 0) {
 if ((this.cc1 & 8) != 0) {
-this.y1t += (-this.x1t * dy) / dx;
-this.z1t += (-this.x1t * dz) / dx;
+this.y1t += Clazz.floatToInt ((-this.x1t * dy) / dx);
+this.z1t += Clazz.floatToInt ((-this.x1t * dz) / dx);
 this.x1t = 0;
 } else if ((this.cc1 & 4) != 0) {
-this.y1t += ((xLast - this.x1t) * dy) / dx;
-this.z1t += ((xLast - this.x1t) * dz) / dx;
+this.y1t += Clazz.floatToInt (((xLast - this.x1t) * dy) / dx);
+this.z1t += Clazz.floatToInt (((xLast - this.x1t) * dz) / dx);
 this.x1t = xLast;
 } else if ((this.cc1 & 2) != 0) {
-this.x1t += (-this.y1t * dx) / dy;
-this.z1t += (-this.y1t * dz) / dy;
+this.x1t += Clazz.floatToInt ((-this.y1t * dx) / dy);
+this.z1t += Clazz.floatToInt ((-this.y1t * dz) / dy);
 this.y1t = 0;
 } else if ((this.cc1 & 1) != 0) {
-this.x1t += ((yLast - this.y1t) * dx) / dy;
-this.z1t += ((yLast - this.y1t) * dz) / dy;
+this.x1t += Clazz.floatToInt (((yLast - this.y1t) * dx) / dy);
+this.z1t += Clazz.floatToInt (((yLast - this.y1t) * dz) / dy);
 this.y1t = yLast;
 } else if ((this.cc1 & 32) != 0) {
-this.x1t += ((slab - this.z1t) * dx) / dz;
-this.y1t += ((slab - this.z1t) * dy) / dz;
+this.x1t += Clazz.floatToInt (((slab - this.z1t) * dx) / dz);
+this.y1t += Clazz.floatToInt (((slab - this.z1t) * dy) / dz);
 this.z1t = slab;
 } else {
-this.x1t += ((depth - this.z1t) * dx) / dz;
-this.y1t += ((depth - this.z1t) * dy) / dz;
+this.x1t += Clazz.floatToInt (((depth - this.z1t) * dx) / dz);
+this.y1t += Clazz.floatToInt (((depth - this.z1t) * dy) / dz);
 this.z1t = depth;
 }this.cc1 = this.g3d.clipCode3 (this.x1t, this.y1t, this.z1t);
 } else {
 if ((this.cc2 & 8) != 0) {
-this.y2t += (-this.x2t * dy) / dx;
-this.z2t += (-this.x2t * dz) / dx;
+this.y2t += Clazz.floatToInt ((-this.x2t * dy) / dx);
+this.z2t += Clazz.floatToInt ((-this.x2t * dz) / dx);
 this.x2t = 0;
 } else if ((this.cc2 & 4) != 0) {
-this.y2t += ((xLast - this.x2t) * dy) / dx;
-this.z2t += ((xLast - this.x2t) * dz) / dx;
+this.y2t += Clazz.floatToInt (((xLast - this.x2t) * dy) / dx);
+this.z2t += Clazz.floatToInt (((xLast - this.x2t) * dz) / dx);
 this.x2t = xLast;
 } else if ((this.cc2 & 2) != 0) {
-this.x2t += (-this.y2t * dx) / dy;
-this.z2t += (-this.y2t * dz) / dy;
+this.x2t += Clazz.floatToInt ((-this.y2t * dx) / dy);
+this.z2t += Clazz.floatToInt ((-this.y2t * dz) / dy);
 this.y2t = 0;
 } else if ((this.cc2 & 1) != 0) {
-this.x2t += ((yLast - this.y2t) * dx) / dy;
-this.z2t += ((yLast - this.y2t) * dz) / dy;
+this.x2t += Clazz.floatToInt (((yLast - this.y2t) * dx) / dy);
+this.z2t += Clazz.floatToInt (((yLast - this.y2t) * dz) / dy);
 this.y2t = yLast;
 } else if ((this.cc2 & 32) != 0) {
-this.x2t += ((slab - this.z2t) * dx) / dz;
-this.y2t += ((slab - this.z2t) * dy) / dz;
+this.x2t += Clazz.floatToInt (((slab - this.z2t) * dx) / dz);
+this.y2t += Clazz.floatToInt (((slab - this.z2t) * dy) / dz);
 this.z2t = slab;
 } else {
-this.x2t += ((depth - this.z2t) * dx) / dz;
-this.y2t += ((depth - this.z2t) * dy) / dz;
+this.x2t += Clazz.floatToInt (((depth - this.z2t) * dx) / dz);
+this.y2t += Clazz.floatToInt (((depth - this.z2t) * dy) / dz);
 this.z2t = depth;
 }this.cc2 = this.g3d.clipCode3 (this.x2t, this.y2t, this.z2t);
 }} while ((this.cc1 | this.cc2) != 0);

@@ -1,5 +1,5 @@
 Clazz.declarePackage ("J.jvxl.data");
-Clazz.load (null, "J.jvxl.data.JvxlData", ["java.lang.Float", "J.jvxl.data.JvxlCoder", "J.util.SB"], function () {
+Clazz.load (null, "J.jvxl.data.JvxlData", ["java.lang.Float", "JU.SB", "J.jvxl.data.JvxlCoder"], function () {
 c$ = Clazz.decorateAsClass (function () {
 this.wasJvxl = false;
 this.wasCubic = false;
@@ -16,7 +16,7 @@ this.jvxlDataIsColorMapped = false;
 this.jvxlDataIs2dContour = false;
 this.jvxlDataIsColorDensity = false;
 this.isColorReversed = false;
-this.thisSet = -1;
+this.thisSet = -2147483648;
 this.edgeFractionBase = 35;
 this.edgeFractionRange = 90;
 this.colorFractionBase = 35;
@@ -57,6 +57,7 @@ this.boundingBox = null;
 this.excludedTriangleCount = 0;
 this.excludedVertexCount = 0;
 this.colorDensity = false;
+this.pointSize = 0;
 this.moleculeXml = null;
 this.dataMin = 0;
 this.dataMax = 0;
@@ -76,6 +77,7 @@ this.slabInfo = null;
 this.allowVolumeRender = false;
 this.voxelVolume = 0;
 this.mapLattice = null;
+this.baseColor = null;
 Clazz.instantialize (this, arguments);
 }, J.jvxl.data, "JvxlData");
 Clazz.prepareFields (c$, function () {
@@ -94,6 +96,7 @@ this.jvxlVolumeDataXml = "";
 this.color = null;
 this.colorScheme = null;
 this.colorDensity = false;
+this.pointSize = NaN;
 this.contourValues = null;
 this.contourValuesUsed = null;
 this.contourColixes = null;
@@ -105,7 +108,7 @@ this.nPointsX = 0;
 this.nVertexColors = 0;
 this.slabInfo = null;
 this.slabValue = -2147483648;
-this.thisSet = -1;
+this.thisSet = -2147483648;
 this.rendering = null;
 this.translucency = 0;
 this.vContours = null;
@@ -120,17 +123,17 @@ if (this.jvxlSurfaceData.indexOf ("--") == 0) this.jvxlSurfaceData = this.jvxlSu
 this.jvxlPlane = thePlane;
 this.mapLattice = mapLattice;
 this.nSurfaceInts = nSurfaceInts;
-}, "J.util.P4,J.util.P3,~N,~S");
+}, "JU.P4,JU.P3,~N,~S");
 $_M(c$, "setSurfaceInfoFromBitSet", 
 function (bs, thePlane) {
 this.setSurfaceInfoFromBitSetPts (bs, thePlane, null);
-}, "J.util.BS,J.util.P4");
+}, "JU.BS,JU.P4");
 $_M(c$, "setSurfaceInfoFromBitSetPts", 
 function (bs, thePlane, mapLattice) {
-var sb =  new J.util.SB ();
+var sb =  new JU.SB ();
 var nSurfaceInts = (thePlane != null ? 0 : J.jvxl.data.JvxlCoder.jvxlEncodeBitSetBuffer (bs, this.nPointsX * this.nPointsY * this.nPointsZ, sb));
 this.setSurfaceInfo (thePlane, mapLattice, nSurfaceInts, sb.toString ());
-}, "J.util.BS,J.util.P4,J.util.P3");
+}, "JU.BS,JU.P4,JU.P3");
 $_M(c$, "jvxlUpdateInfo", 
 function (title, nBytes) {
 this.title = title;

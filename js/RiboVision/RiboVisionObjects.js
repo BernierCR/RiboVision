@@ -183,13 +183,18 @@ function RvLayer(LayerName, CanvasName, Data, Filled, ScaleFactor, Type, Color) 
 	}
 }
 
-function RvSelection(SelectionName,rvResidues,rvColor){
+function RvSelection(SelectionName,rvResidues,rvColor,rvResidues_rProtein){
 	//Properties
 	this.Name = SelectionName;
 	if (rvResidues) { 
 		this.Residues = rvResidues;
 	} else {
 		this.Residues = [];
+	}
+	if (rvResidues_rProtein) { 
+		this.Residues_rProtein = rvResidues_rProtein;
+	} else {
+		this.Residues_rProtein = [];
 	}
 	if (rvColor) {
 		this.Color = rvColor;
@@ -207,6 +212,7 @@ function rvDataSet(DataSetName) {
 	this.HighlightLayer = [];
 	this.Residues = [];
 	this.ResidueList = [];
+	this.SequenceList = "";
 	this.rvTextLabels = [];
 	this.rvLineLabels = [];
 	this.BasePairs = [];
@@ -217,6 +223,8 @@ function rvDataSet(DataSetName) {
 	this.LayerTypes = ['circles', 'lines', 'labels', 'residues', 'contour', 'selected'];
 	this.ConservationTable = [];
 	this.DataDescriptions = [];
+	this.ExtraPyMOLScript ='';
+	this.ColorProteins = [];
 	//Methods
 	this.toJSON = function () {
 		return {
@@ -273,6 +281,7 @@ function rvDataSet(DataSetName) {
 	this.addResidues = function (rvResidues) {
 		this.Residues = rvResidues;
 		this.ResidueList = makeResidueList(rvResidues);
+		this.SequenceList = makeSequenceList(rvResidues);
 	};
 	this.addLabels = function (rvTextLabels, rvLineLabels, rvExtraLabels) {
 		if (rvTextLabels !== undefined){
@@ -298,6 +307,7 @@ function rvDataSet(DataSetName) {
 	this.addSpeciesEntry = function (SpeciesEntry) {
 		this.SpeciesEntry = SpeciesEntry;
 		this.SpeciesEntry.Molecule_Names = this.SpeciesEntry.Molecule_Names.split(":");
+		this.SpeciesEntry.Molecule_Names_rProtein = this.SpeciesEntry.Molecule_Names_rProtein.split(":");
 	};
 	this.addSelection = function (Name, rvResidues, rvColor) {
 		if (!Name) {
@@ -573,20 +583,27 @@ function rvDataSet(DataSetName) {
 	
 	// Private functions, kinda
 	function makeResidueList(rvResidues) {
-		var ResidueListLocal = [],
-		j;
+		var ResidueListLocal = [],j;
 		for (j = 0; j < rvResidues.length; j++) {
 			ResidueListLocal[j] = rvResidues[j].ChainID + "_" + rvResidues[j].resNum.replace(/[^:]*:/g, "").replace(/[^:]*:/g, "");
 		}
 		return ResidueListLocal;
 	}
+	function makeSequenceList(rvResidues) {
+		var SequenceListLocal = "",j;
+		for (j = 0; j < rvResidues.length; j++) {
+			SequenceListLocal = SequenceListLocal.concat(rvResidues[j].resName);
+		}
+		return SequenceListLocal;
+	}
 	function refreshLayer(targetLayer) {
 		if (rvDataSets[0].Residues !== undefined && targetLayer.Type === "circles") {
 			targetLayer.clearCanvas();
+			var CircleSize = rvDataSets[0].SpeciesEntry.Circle_Radius;
 			for (var i = rvDataSets[0].Residues.length - 1; i >= 0; i--) {
-				if (targetLayer.dataLayerColors[i] != '#000000' && targetLayer.dataLayerColors[i] != undefined && targetLayer.dataLayerColors[i] != '#858585') {
+				if (targetLayer.dataLayerColors[i] != undefined && targetLayer.dataLayerColors[i] != '#858585') {
 					targetLayer.CanvasContext.beginPath();
-					targetLayer.CanvasContext.arc(rvDataSets[0].Residues[i].X, rvDataSets[0].Residues[i].Y, (targetLayer.ScaleFactor * 1.7), 0, 2 * Math.PI, false);
+					targetLayer.CanvasContext.arc(rvDataSets[0].Residues[i].X, rvDataSets[0].Residues[i].Y, (targetLayer.ScaleFactor * CircleSize), 0, 2 * Math.PI, false);
 					targetLayer.CanvasContext.closePath();
 					targetLayer.CanvasContext.strokeStyle = targetLayer.dataLayerColors[i];
 					targetLayer.CanvasContext.stroke();
@@ -607,7 +624,7 @@ function rvDataSet(DataSetName) {
 		if (rvDataSets[0].rvTextLabels != undefined) {
 			var n = watermark(false);
 			for (var i = 0; i < rvDataSets[0].rvTextLabels.length; i++) {
-				targetLayer.CanvasContext.font = (0.75 * rvDataSets[0].rvTextLabels[i].FontSize) + "pt Calibri";
+				targetLayer.CanvasContext.font = (0.70 * rvDataSets[0].rvTextLabels[i].FontSize) + 'pt "Myriad Pro", Calibri, Arial';
 				targetLayer.CanvasContext.fillStyle = rvDataSets[0].rvTextLabels[i].Fill;
 				targetLayer.CanvasContext.fillText(rvDataSets[0].rvTextLabels[i].LabelText, rvDataSets[0].rvTextLabels[i].X, rvDataSets[0].rvTextLabels[i].Y);
 			}
@@ -663,7 +680,7 @@ function rvDataSet(DataSetName) {
 					}
 				}
 				targetLayer.CanvasContext.strokeStyle = "#000000";
-				targetLayer.CanvasContext.font = "3pt Arial";
+				targetLayer.CanvasContext.font = rvDataSets[0].SpeciesEntry.Font_Size_Canvas + 'pt "Myriad Pro", Calibri, Arial';
 				targetLayer.CanvasContext.textBaseline = "middle";
 				targetLayer.CanvasContext.textAlign = "center";
 				for (var i = rvDataSets[0].Residues.length - 1; i >= 0; i--) {
@@ -683,6 +700,7 @@ function rvDataSet(DataSetName) {
 		} else {
 			SelectionList[0]=SeleName;
 		}
+		var CircleSize = rvDataSets[0].SpeciesEntry.Circle_Radius;
 		targetLayer.clearCanvas();
 		targetLayer.Data = [];
 		targetLayer.dataLayerColors = [];
@@ -695,7 +713,7 @@ function rvDataSet(DataSetName) {
 				var targetSelection = rvDataSets[0].getSelection(SelectionList[k]);
 				for (var j = targetSelection.Residues.length - 1; j >= 0; j--) {
 					targetLayer.CanvasContext.beginPath();
-					targetLayer.CanvasContext.arc(targetSelection.Residues[j].X, targetSelection.Residues[j].Y, (targetLayer.ScaleFactor * 1.7), 0, 2 * Math.PI, false);
+					targetLayer.CanvasContext.arc(targetSelection.Residues[j].X, targetSelection.Residues[j].Y, (targetLayer.ScaleFactor * CircleSize), 0, 2 * Math.PI, false);
 					targetLayer.CanvasContext.closePath();
 					targetLayer.CanvasContext.strokeStyle = targetSelection.Color;
 					targetLayer.CanvasContext.lineWidth = 0.5;
@@ -716,12 +734,12 @@ function rvDataSet(DataSetName) {
 				targetLayer.clearCanvas();
 				targetLayer.dataLayerColors = [];
 			}
-			
+			var CircleSize = rvDataSets[0].SpeciesEntry.Circle_Radius;
 			if (rvDataSets[0].Residues != undefined) {
 				for (var i = rvDataSets[0].Residues.length - 1; i >= 0; i--) {
-					if (dataIndices && ColorArray && ColorArray[dataIndices[i]] != '#000000' && ColorArray[dataIndices[i]] != undefined && ColorArray[dataIndices[i]] != '#858585') {
+					if (dataIndices && ColorArray && ColorArray[dataIndices[i]] != undefined && ColorArray[dataIndices[i]] != '#858585') {
 						targetLayer.CanvasContext.beginPath();
-						targetLayer.CanvasContext.arc(rvDataSets[0].Residues[i].X, rvDataSets[0].Residues[i].Y, (targetLayer.ScaleFactor * 1.7), 0, 2 * Math.PI, false);
+						targetLayer.CanvasContext.arc(rvDataSets[0].Residues[i].X, rvDataSets[0].Residues[i].Y, (targetLayer.ScaleFactor * CircleSize), 0, 2 * Math.PI, false);
 						targetLayer.CanvasContext.closePath();
 						targetLayer.CanvasContext.strokeStyle = ColorArray[dataIndices[i]];
 						targetLayer.CanvasContext.stroke();
@@ -730,9 +748,9 @@ function rvDataSet(DataSetName) {
 							targetLayer.CanvasContext.fill();
 						}
 						targetLayer.dataLayerColors[i] = ColorArray[dataIndices[i]];
-					} else if (!dataIndices && !ColorArray && targetLayer.dataLayerColors[i] && targetLayer.dataLayerColors[i] != '#000000' && targetLayer.dataLayerColors[i] != '#858585') {
+					} else if (!dataIndices && !ColorArray && targetLayer.dataLayerColors[i] && targetLayer.dataLayerColors[i] != '#858585') {
 						targetLayer.CanvasContext.beginPath();
-						targetLayer.CanvasContext.arc(rvDataSets[0].Residues[i].X, rvDataSets[0].Residues[i].Y, (targetLayer.ScaleFactor * 1.7), 0, 2 * Math.PI, false);
+						targetLayer.CanvasContext.arc(rvDataSets[0].Residues[i].X, rvDataSets[0].Residues[i].Y, (targetLayer.ScaleFactor * CircleSize), 0, 2 * Math.PI, false);
 						targetLayer.CanvasContext.closePath();
 						targetLayer.CanvasContext.strokeStyle = targetLayer.dataLayerColors[i];
 						targetLayer.CanvasContext.stroke();

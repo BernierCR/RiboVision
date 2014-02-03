@@ -17,7 +17,7 @@ Clazz.prepareFields (c$, function () {
 this.domObj =  new Array (1);
 this.nullObj =  new Array (0);
 });
-Clazz.overrideMethod (c$, "initializeReader", 
+$_V(c$, "initializeReader", 
 function () {
 this.atts =  new java.util.Hashtable ();
 this.setMyError (this.parseXML ());
@@ -57,7 +57,7 @@ try {
 thisReader.processXml (this, saxReader);
 } catch (e) {
 if (Clazz.exceptionOf (e, Exception)) {
-return "Error reading XML: " + e.getMessage ();
+return "Error reading XML: " + (this.parent.viewer.isJS ? e : e.getMessage ());
 } else {
 throw e;
 }
@@ -65,6 +65,10 @@ throw e;
 return null;
 }, $fz.isPrivate = true, $fz), "~O");
 $_M(c$, "processXml", 
+function (parent, saxReader) {
+this.PX (parent, saxReader);
+}, "J.adapter.readers.xml.XmlReader,~O");
+$_M(c$, "PX", 
 function (parent, saxReader) {
 this.parent = parent;
 this.atomSetCollection = parent.atomSetCollection;
@@ -76,31 +80,33 @@ this.attribs =  new Array (1);
 this.attArgs =  new Array (1);
 this.domObj =  new Array (1);
 {
-this.domObj[0] =
-parent.viewer.applet._createDomNode("xmlReader"
-,this.reader.lock.lock);
-}this.walkDOMTree ();
-{
+var s = this.reader.lock.lock;
+if (Clazz.instanceOf (s, java.io.BufferedInputStream)) {
+s = new java.io.BufferedInputStream(new java.io.ByteArrayInputStream(s.$in.buf));
+s = J.io.JmolBinary.StreamToString (s);
+}
+this.domObj[0] = parent.viewer.applet._createDomNode("xmlReader",s);
+this.walkDOMTree();
 parent.viewer.applet._createDomNode("xmlReader",null);
 }} else {
 var saxHandler = J.api.Interface.getOptionInterface ("adapter.readers.xml.XmlHandler");
 saxHandler.parseXML (this, saxReader, this.reader);
 }}, "J.adapter.readers.xml.XmlReader,~O");
-$_M(c$, "applySymmetryAndSetTrajectory", 
+$_V(c$, "applySymmetryAndSetTrajectory", 
 function () {
 try {
-if (this.parent == null) Clazz.superCall (this, J.adapter.readers.xml.XmlReader, "applySymmetryAndSetTrajectory", []);
+if (this.parent == null) this.applySymTrajASCR ();
  else this.parent.applySymmetryAndSetTrajectory ();
 } catch (e) {
 if (Clazz.exceptionOf (e, Exception)) {
-System.out.println (e.getMessage ());
+System.out.println ((this.parent == null ? this : this.parent).viewer.isJS ? e : e.getMessage ());
 J.util.Logger.error ("applySymmetry failed: " + e);
 } else {
 throw e;
 }
 }
 });
-Clazz.overrideMethod (c$, "processDOM", 
+$_V(c$, "processDOM", 
 function (DOMNode) {
 this.domObj = [DOMNode];
 this.setMyError (this.selectReaderAndGo (null));

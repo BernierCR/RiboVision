@@ -65,18 +65,14 @@ function RiboVisionReady() {
 	// New Stuff Section, Layers, Selections Panels
 	$.fx.speeds._default = 1000;
 	$("#PanelTabs").tabs();
-	$("#dialog-saveFigures").dialog({
+	$("#SaveTabs").tabs();
+	
+	$("#dialog-saveEverything").dialog({
 		resizable : false,
 		autoOpen : false,
 		height : 600,
 		width : 1000,
 		modal : true,
-		/*
-		buttons: {
-			Ok: function() {
-				$( this ).dialog( "close" );
-			}
-		},*/
 		open : function () {
 			$("#myJmol_object").css("visibility", "hidden");
 		},
@@ -121,24 +117,6 @@ function RiboVisionReady() {
 		}
 	});
 
-	$("#InteractionSettingDialog").dialog({
-		autoOpen : false,
-		show : {
-			effect : "blind",
-			duration : 500
-		}, //change blindin animation attributes
-		hide : {
-			effect : "blind",
-			duration : 500
-		},
-		height : 500,
-		position : {
-			my : "right top",
-			at : "right top",
-			of : $("#canvasDiv")
-		}
-	});
-
 	$("#RiboVisionSettingsPanel").dialog({
 		autoOpen : false,
 		show : {
@@ -165,27 +143,6 @@ function RiboVisionReady() {
 			$("#SessionList").text("");			
 		}
 	});
-	$("#RiboVisionSaveManagerPanel").dialog({
-		resizable : false,
-		autoOpen : false,
-		show : {
-			effect : "blind",
-			duration : 300
-		},
-		height : 600,
-		width : 600,
-		position : {
-			my : "center",
-			at : "center",
-			of : $("#canvasDiv")
-		},
-		open : function () {
-			//$("#myJmol_object").css("visibility", "hidden");
-		},
-		close : function () { 
-			//$("#myJmol_object").css("visibility", "visible");
-		}
-	});
 	
 	$("#openLayerBtn").click(function () {
 		$("#PanelTabs").tabs( "option", "active", 0 );
@@ -204,7 +161,8 @@ function RiboVisionReady() {
 	});
 	
 	$("#RiboVisionSaveManager").click(function () {
-		$("#RiboVisionSaveManagerPanel").dialog("open");
+		$("#SaveTabs").tabs( "option", "active", 2 );
+		$("#dialog-saveEverything").dialog("open");
 		return false;
 	});
 	
@@ -420,11 +378,8 @@ function RiboVisionReady() {
 	$("#SideBarAccordian").accordion({
 		heightStyle: "fill",
 		activate : function (event, ui) {
-			/*resetFileInput($('#files'));
-			$('#files').on('change', function (event) {
-				handleFileSelect(event);
-			});*/
-		}
+		},
+		animate: 300
 	});
 	
 	//$("#tabs").tabs();
@@ -553,14 +508,14 @@ function RiboVisionReady() {
 			targetLayer[0].DataLabel = ui.text;
 			$("[name=" + targetLayer[0].LayerName + "]").find(".layerContent").find("span[name=DataLabel]").text(targetLayer[0].DataLabel);
 			var ColName =[];
-			ColName[0] = ui.value.replace(/[^_]+_[^_]+_[^_]+_/,"");
+			ColName[0] = ui.value.replace(/[^_]+_[^_]+_/,"").replace(/[^_]+_/,"");
 			var result = $.grep(rvDataSets[0].DataDescriptions, function(e){ return e.ColName === ColName[0]; });
 			if (result[0]){
 				$(this).parent().parent().find(".DataDescription").text(result[0].Description);
-				$(this).parent().parent().find(".ManualLink").attr("href","/Documentation/" + result[0].HelpLink + ".html");
+				$(this).parent().parent().find(".ManualLink").attr("href","./Documentation/" + result[0].HelpLink + ".html");
 			} else {
 				$(this).parent().parent().find(".DataDescription").text("Data Description is missing.");
-				$(this).parent().parent().find(".ManualLink").attr("href","/Documentation");				
+				$(this).parent().parent().find(".ManualLink").attr("href","./Documentation");				
 			}
 			refreshBasePairs(interactionchoice);
 		}
@@ -590,14 +545,11 @@ function RiboVisionReady() {
 			filterBasePairs(FullBasePairSet,array_of_checked_values);
 		}
 	});
-	$("#SaveFigureBtn").button().click(function(){
-		$("#dialog-saveFigures").dialog("open");
+	$("#SaveEverythingBtn").button().click(function(){
+		$("#dialog-saveEverything").dialog("open");
 		return false;
 	});
-	$("#SaveSessionBtn").button().click(function(){
-		$("#RiboVisionSaveManagerPanel").dialog("open");
-		return false;
-	});
+
 	$("#freshenRvState").button().click(function(){
 		InitRibovision(true);
 	});
@@ -626,7 +578,7 @@ function RiboVisionReady() {
 			primary : "ui-icon-pencil"
 		}
 	});
-	
+
 	$("#RiboVisionSettings").button({
 		text : false,
 		icons : {
@@ -730,6 +682,7 @@ function RiboVisionReady() {
 		var O = Jmol.evaluate(myJmol,"script('show orientation')");
 		myJmol = Jmol.getApplet("myJmol", JmolInfo); 
 		$('#jmolDiv').html(Jmol.getAppletHtml(myJmol));
+		$('#myJmol_appletdiv').css("z-index",-9000);
 		Jmol.script(myJmol, "script states/" + rvDataSets[0].SpeciesEntry.Jmol_Script);
 		var jscript = "display " + rvDataSets[0].SpeciesEntry.Jmol_Model_Num_rRNA + ".1";
 		Jmol.script(myJmol, jscript);
@@ -965,7 +918,7 @@ function RiboVisionReady() {
 		resizable : false,
 		autoOpen : false,
 		height : "auto",
-		width : 800,
+		width : 900,
 		modal : true,
 		buttons: {
 			Ok: function() {
@@ -997,13 +950,15 @@ function RiboVisionReady() {
 		open : function () {
 			myJmol = Jmol.getApplet("myJmol", JmolInfo,true); 
 			//$("#myJmol_object").css("visibility", "hidden");
+			$("#JMolDisabled").attr("checked","checked");	
+			/*
 			if (myJmol._isJava){
-				$("#JmolType").text("Jmol (Java)");	
-				$("#JmolJava2").attr("checked","checked");
+				//$("#JmolType").text("Jmol (Java)");	
+				//$("#JmolJava2").attr("checked","checked");
 			} else {
-				$("#JmolType").text("JSmol (no Java)");
-				$("#JSmolJS2").attr("checked","checked");				
-			}
+				//$("#JmolType").text("JSmol (no Java)");
+				//$("#JSmolJS2").attr("checked","checked");				
+			}*/
 			$("#JmolTypeToggle2").buttonset("refresh");
 		},
 		close : function () { 
@@ -1056,7 +1011,8 @@ function InitRibovision(FreshState) {
 	resizeElements();
 	if (!canvas2DSupported) {return};
 	if (OpenStateOnLoad && !FreshState) {
-		$("#RiboVisionSaveManagerPanel").dialog("open");
+		$("#SaveTabs").tabs( "option", "active", 2 );
+		$("#dialog-saveEverything").dialog("open");
 	}
 }
 
@@ -1135,8 +1091,8 @@ function InitRibovision3(FreshState) {
 		$.each(SpeciesListU, function (i, item) {
 			$("#speciesList").append(
 				$("<li>").append(
-					$("<a>").attr('href', '#').append(
-						SpeciesListU[i])))
+					$("<a>").attr('href', '#').append($('<i>').append(
+						SpeciesListU[i]))))
 			
 			// Subunits
 			var FoundSubUnits = [];
