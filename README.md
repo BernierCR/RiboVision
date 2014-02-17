@@ -1,18 +1,33 @@
-RiboVision
+[RiboVision](http://apollo.chemistry.gatech.edu/RiboVision/)
 ==========
 
-RiboVision webapp, a RiboZones Project. Sponsered by RiboEvo.
+RiboVision is a modern open-source ribosome-information viewer website. It is designed for easy visual analysis. It is powered by a backend of pre-computed data, such as domain and helix definitions, proteins contacts, base pairing, sequence conservation, etc. Additionally, you may visualize your own data. If you can get your data into our easy format, you can visualize it.
 
-Updated to version 1.10.
+To get started, check out [RiboVision](http://apollo.chemistry.gatech.edu/RiboVision/)!
 
-This isn't totally ready yet. The documentation is in the repo now, but not fully updated for version 1.10. The code isn't organized and commented enough. 
-I don't have all the licenses in here correct. I still need to describe the back-end architecture. 
+Quick start
+-----------
 
-This is the first time I ever actually released any of my source code. 
+For a quickstart, look at http://apollo.chemistry.gatech.edu/RiboVision/Documentation/Overview.html
 
-The parts that are mine, most of it, are licensed under the MIT license. Other people's libraries will get their licenses and copyrights listed soon. 
-They are already there if in their respective files. 
+Get help
+--------
 
-We welcome code (and data) contributions from the community. We are still getting organized, but please contact us.
+Check out http://apollo.chemistry.gatech.edu/RiboVision/Documentation/
 
-http://apollo.chemistry.gatech.edu/RiboVision/
+
+About
+--------
+RiboVision is a [RiboZones](http://apollo.chemistry.gatech.edu/) Project. Sponsered by [RiboEvo](http://astrobiology.gatech.edu/). 
+
+We are soliciting comments, data, code contributions, and scientific collaborations. 
+
+Citation
+---------
+
+The preprint of our paper is located at [Faraday Discussions 169](http://pubs.rsc.org/en/Content/ArticleLanding/2014/FD/C3FD00126A#!divAbstract)
+
+License 
+-------
+RiboVision is released under the MIT license, but contains libraries with other, but compatible licenses. 
+
