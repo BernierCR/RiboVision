@@ -22,10 +22,12 @@ RiboVision is a [RiboZones](http://apollo.chemistry.gatech.edu/) Project. Sponse
 
 We are soliciting comments, data, code contributions, and scientific collaborations. 
 
+RiboVision is under active development. Version 1.2 contains major improvements. Please contact us if you would like to belp beta test 1.2. Starting with the release of version 1.2, GitHub will became our main source-code control system, so that future development will be public. 
+
 Citation
 ---------
 
-The preprint of our paper is located at [Faraday Discussions 169](http://pubs.rsc.org/en/Content/ArticleLanding/2014/FD/C3FD00126A#!divAbstract)
+Our paper is located at [Faraday Discussions 169](http://pubs.rsc.org/en/Content/ArticleLanding/2014/FD/C3FD00126A#!divAbstract). Please cite this paper if you use RiboVision in a research project. 
 
 License 
 -------
